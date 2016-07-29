@@ -14,7 +14,7 @@ local function silent_by_reply(extra, success, result)
     return 'Use this in Your Groups'
   end
 end
-local function unsilent_by_reply(extra, success, result) 
+local function انموت_by_reply(extra, success, result) 
   vardump(result)
   if result.to.peer_type == 'channel' then
     local chat = 'channel#id'..result.to.peer_id
@@ -23,7 +23,7 @@ local function unsilent_by_reply(extra, success, result)
     end
     send_large_msg(chat, "User "..result.from.first_name.." ["..result.from.peer_id.."] alowed to chat. ")
       -- Save on redis
-    local hash =  'silent:'..result.to.peer_id..':'..result.from.peer_id
+    local hash =  'موت:'..result.to.peer_id..':'..result.from.peer_id
     redis:del(hash)
   else
     return 'Use this in Your Groups'
@@ -31,24 +31,24 @@ local function unsilent_by_reply(extra, success, result)
 end
 local function run(msg, matches)
   if msg.to.type == "channel" then
-    if matches[1] == "silent" and is_sudo(msg) then
+    if matches[1] == "موت" and is_sudo(msg) then
       if type(msg.reply_id)~= "nil" then
         msgr = get_message(msg.reply_id, silent_by_reply, false)
       elseif string.match(matches[2], '^%d+$') then
         local channel = msg.to.id
         local user = matches[2]
-        local hash = 'silent:'..channel..':'..user
+        local hash = 'موت:'..channel..':'..user
         redis:set(hash, true)
         return "User ["..matches[2].."] not alowed to chat."
       end
     end
-    if matches[1] == "unsilent" and is_sudo(msg) then
+    if matches[1] == "انموت" and is_sudo(msg) then
    if type(msg.reply_id)~="nil" then
-     msgr = get_message(msg.reply_id, unsilent_by_reply, false)
+     msgr = get_message(msg.reply_id, انموت_by_reply, false)
    elseif string.match(matches[2], '^%d+$') then
      local channel = msg.to.id
   local user = matches[2]
-     local hash = 'silent:'..channel..':'..user
+     local hash = 'موت:'..channel..':'..user
         redis:del(hash)
         return "User ["..matches[2].."] alowed to chat."
    end
@@ -61,7 +61,7 @@ local function pre_process (msg)
     return msg
   end
   
-  local lock = "silent:"..msg.to.id..":"..msg.from.id
+  local lock = "موت:"..msg.to.id..":"..msg.from.id
   local enable = redis:get(lock)
   if enable and msg.to.type == "channel" then
       delete_msg(msg.id, ok_cb, false)
