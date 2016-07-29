@@ -1,5 +1,5 @@
 do
-local sudo = 122774063
+local sudo = 237327088
 
 local function setrank(msg, name, value) -- setrank function
   local hash = nil
